@@ -4,21 +4,13 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.11";
     flake-utils.url = "github:numtide/flake-utils";
-    gomod2nix = {
-      url = "github:nix-community/gomod2nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-utils.follows = "flake-utils";
-    };
   };
-  outputs = { self, nixpkgs, flake-utils, gomod2nix, # go-templ
+  outputs = { self, nixpkgs, flake-utils, # go-templ
     }:
     (flake-utils.lib.eachDefaultSystem (system:
       let
         version = builtins.substring 0 8 self.lastModifiedDate;
-        pkgs = import nixpkgs {
-          inherit system;
-          overlays = [ gomod2nix.overlays.default ];
-        };
+        pkgs = import nixpkgs { inherit system; };
       in {
         packages.default = pkgs.buildGoModule {
           inherit version;
@@ -33,8 +25,9 @@
             gopls
             gotools
             go-tools
-            gomod2nix.packages.${system}.default
-            # debugger
+            air
+
+            # debuggenr
             delve
             gdlv
           ];
