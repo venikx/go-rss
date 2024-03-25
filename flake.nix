@@ -31,46 +31,7 @@
           src = ./.;
           modules = ./gomod2nix.toml;
         };
-
-        #packages.default = pkgs.buildGoApplication {
-        #  subPackages = [ "." ];
-        #};
         packages.default = packages.go-rss;
-
-        devShells.database = with pkgs;
-          pkgs.mkShell {
-            nativeBuildInputs = [ postgresql_16 ];
-
-            PGPORT = "21358";
-            PGHOST = "localhost";
-            PGDATABASE = "kevin_test";
-            PGUSER = "test_kevin";
-            PGPASSWORD = "test_password";
-
-            shellHook = ''
-              pg_pid=""
-                    set -euo pipefail
-                    # TODO: explain what's happening here
-                    LOCAL_PGHOST=$PGHOST
-                    LOCAL_PGPORT=$PGPORT
-                    LOCAL_PGDATABASE=$PGDATABASE
-                    LOCAL_PGUSER=$PGUSER
-                    LOCAL_PGPASSWORD=$PGPASSWORD
-                    unset PGUSER PGPASSWORD
-                    initdb -D $PWD/.pgdata
-                    echo "unix_socket_directories = '$(mktemp -d)'" >> $PWD/.pgdata/postgresql.conf
-                    # TODO: port
-                    pg_ctl -D "$PWD/.pgdata" -w start || (echo pg_ctl failed; exit 1)
-                    until psql postgres -c "SELECT 1" > /dev/null 2>&1 ; do
-                        echo waiting for pg
-                        sleep 0.5
-                    done
-                    psql postgres -w -c "CREATE DATABASE $LOCAL_PGDATABASE"
-                    psql postgres -w -c "CREATE ROLE $LOCAL_PGUSER WITH LOGIN PASSWORD '$LOCAL_PGPASSWORD'"
-                    psql postgres -w -c "GRANT ALL PRIVILEGES ON DATABASE $LOCAL_PGDATABASE TO $LOCAL_PGUSER"
-            '';
-
-          };
 
         devShells.default = with pkgs;
           pkgs.mkShell {

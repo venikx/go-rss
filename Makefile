@@ -12,6 +12,14 @@ build:
 run:
 	@go run cmd/go-rss/main.go
 
+migrations-up:
+	@goose -dir ./internal/database/migrations \
+	postgres postgres://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_DATABASE}?sslmode=disable up
+
+migrations-down:
+	@goose -dir ./internal/database/migrations \
+	postgres postgres://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_DATABASE}?sslmode=disable down
+
 # Create DB container
 docker-run:
 	@if docker compose up 2>/dev/null; then \
