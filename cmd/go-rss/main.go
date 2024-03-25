@@ -2,29 +2,15 @@ package main
 
 import (
 	"fmt"
-	"log"
-	"net/http"
-	"os"
-
-	"github.com/venikx/go-rss/internal/routes"
+	"github.com/venikx/go-rss/internal/server"
 )
 
 func main() {
-	port := os.Getenv("PORT")
-	if port == "" {
-		log.Fatal("PORT is not found in the environment")
-	}
 
-	srv := &http.Server{
-		Addr:    ":" + port,
-		Handler: routes.Multiplexer(),
-	}
+	server := server.NewServer()
 
-	fmt.Printf("Running server on http://localhost:%s", port)
-
-	err := srv.ListenAndServe()
-
+	err := server.ListenAndServe()
 	if err != nil {
-		log.Fatal(err)
+		panic(fmt.Sprintf("cannot start server: %s", err))
 	}
 }
