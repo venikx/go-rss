@@ -1,0 +1,13 @@
+#+title: go-rss
+#+filetags: :ever/sprout:
+#+created: [2024-03-07 Thu 10:23]
+#+modified: [2024-04-09 Tue 01:10]
+
+Typescript pleb trying to write Golang code here. There will be dragons. I
+played around with the language during advent of code, and I ended up liking it.
+
+* Why another RSS Reader?
+- Why not!?!?
+- Educational purposes
+- I didn't like any of the RSS readers out there, I want something minimal and
+  fast
