@@ -1,6 +1,7 @@
 package server
 
 import (
+	//"log"
 	"net/http"
 
 	"github.com/a-h/templ"
@@ -21,8 +22,18 @@ func (s *Server) RegisterRoutes() http.Handler {
 	e.GET("/users", s.HandleUsers)
 	e.POST("/users/new", s.HandleNewUser)
 
+	e.GET("/feeds", s.HandleFeeds)
+	e.POST("/feeds/new", s.HandleNewFeed)
+
 	e.GET("/healthz", s.healthHandler)
-	e.GET("/hello", s.HelloWorldHandler)
+
+	e.HTTPErrorHandler = func(err error, c echo.Context) {
+		// Take required information from error and context and send it to a service like New Relic
+		//log.Println(c.Path(), c.QueryParams(), err.Error())
+
+		// Call the default handler to return the HTTP response
+		e.DefaultHTTPErrorHandler(err, c)
+	}
 
 	return e
 }

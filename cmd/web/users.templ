@@ -1,24 +1,32 @@
 package web
 
+import (
+	"fmt"
+	"github.com/venikx/go-rss/internal/database"
+)
+
 templ NewUserForm() {
-	<form hx-post="/users/new" method="POST" hx-target="#users-list">
+	<form hx-post="/users/new" method="POST" hx-target="#users-list" hx-swap="beforeend">
 		<input id="name" name="name" type="text"/>
 		<button type="submit">Submit</button>
 	</form>
 }
 
-templ User (name string) {
-		<span>{name}</span>
+templ User (user database.User) {
+	<li>{fmt.Sprintf("%v", user.Id )} - {user.Name} - {user.ApiKey}</li>
 }
 
-templ UserList () {
-		<div id="users-list"></div>
+templ UserList (users []database.User) {
+		<ul id="users-list">
+			for _, user := range users {
+				<li>{fmt.Sprintf("%v", user.Id )} - {user.Name} - {user.ApiKey}</li>
+		}
+		</ul>
 }
 
-
-templ UsersPage () {
+templ UsersPage (users []database.User) {
 	@Base() {
 		@NewUserForm()
-		@UserList()
+		@UserList(users)
 	}
 }
