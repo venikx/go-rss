@@ -17,23 +17,12 @@ func (s *Server) RegisterRoutes() http.Handler {
 	fileServer := http.FileServer(http.FS(web.Files))
 	e.GET("/js/*", echo.WrapHandler(fileServer))
 
-	e.GET("/web", echo.WrapHandler(templ.Handler(web.HelloForm())))
-	e.POST("/hello", echo.WrapHandler(http.HandlerFunc(web.HelloWebHandler)))
+	e.GET("/", echo.WrapHandler(templ.Handler(web.Base())))
+	e.GET("/users", s.HandleUsers)
+	e.POST("/users/new", s.HandleNewUser)
 
-	e.GET("/", s.HelloWorldHandler)
-	e.GET("/health", s.healthHandler)
+	e.GET("/healthz", s.healthHandler)
+	e.GET("/hello", s.HelloWorldHandler)
 
 	return e
-}
-
-func (s *Server) HelloWorldHandler(c echo.Context) error {
-	resp := map[string]string{
-		"message": "Hello World",
-	}
-
-	return c.JSON(http.StatusOK, resp)
-}
-
-func (s *Server) healthHandler(c echo.Context) error {
-	return c.JSON(http.StatusOK, s.db.Health())
 }
