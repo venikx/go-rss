@@ -25,7 +25,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 	e.GET("/feeds", s.HandleFeeds)
 	e.POST("/feeds/new", s.HandleNewFeed)
 
-	e.GET("/healthz", s.healthHandler)
+	e.GET("/healthz", s.HealthHandler)
 
 	e.HTTPErrorHandler = func(err error, c echo.Context) {
 		// Take required information from error and context and send it to a service like New Relic

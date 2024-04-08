@@ -58,7 +58,7 @@ func (s *Server) HandleNewFeed(c echo.Context) error {
 	return component.Render(context.Background(), c.Response().Writer)
 }
 
-func (s *Server) healthHandler(c echo.Context) error {
+func (s *Server) HealthHandler(c echo.Context) error {
 	msg, _ := s.db.Health()
 	return c.JSON(http.StatusOK, msg)
 }
