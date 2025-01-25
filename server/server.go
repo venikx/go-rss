@@ -7,15 +7,12 @@ import (
 	"strconv"
 	"time"
 
-	_ "github.com/joho/godotenv/autoload"
-
-	"github.com/venikx/go-rss/internal/database"
+	"github.com/venikx/go-rss/database"
 )
 
 type Server struct {
 	port int
-
-	db database.Service
+	db   database.Service
 }
 
 func NewServer() *http.Server {
@@ -25,7 +22,6 @@ func NewServer() *http.Server {
 		db:   database.New(),
 	}
 
-	// Declare Server config
 	server := &http.Server{
 		Addr:         fmt.Sprintf(":%d", NewServer.port),
 		Handler:      NewServer.RegisterRoutes(),

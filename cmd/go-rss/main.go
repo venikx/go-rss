@@ -2,11 +2,10 @@ package main
 
 import (
 	"fmt"
-	"github.com/venikx/go-rss/internal/server"
+	"github.com/venikx/go-rss/server"
 )
 
 func main() {
-
 	server := server.NewServer()
 
 	err := server.ListenAndServe()

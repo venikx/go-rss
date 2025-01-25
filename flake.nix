@@ -2,7 +2,7 @@
   description = "RSS Reader in Go";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
     flake-utils.url = "github:numtide/flake-utils";
     gomod2nix = {
       url = "github:nix-community/gomod2nix";
@@ -16,13 +16,7 @@
         version = builtins.substring 0 8 self.lastModifiedDate;
         pkgs = import nixpkgs {
           inherit system;
-          overlays = [
-            (final: prev: {
-              go = prev.go_1_21;
-              buildGoModule = prev.buildGo121Module;
-            })
-            gomod2nix.overlays.default
-          ];
+          overlays = [ gomod2nix.overlays.default ];
         };
       in rec {
         packages.go-rss = pkgs.buildGoApplication {
@@ -35,29 +29,19 @@
 
         devShells.default = with pkgs;
           pkgs.mkShell {
+            inputsFrom = [ self.packages.${system}.go-rss ];
+
             packages = [
               air
 
               gomod2nix.packages.${system}.default
-              gotools
               go-tools
               gopls
-              go-outline
-              gopkgs
-              gocode-gomod
-              godef
-              golint
-              templ
 
-              # debugger
-              delve
-              gdlv
-
+              postgresql_17
               goose
-              sqlc
             ];
 
-            nativeBuildInputs = [ go_1_21 ];
           };
       }));
 }
