@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/venikx/go-rss/database"
 	"github.com/venikx/go-rss/typings"
 )
 
@@ -14,11 +15,11 @@ type UsersPage struct {
 	Users []typings.User
 }
 
-func (s *Server) handleGetUsers(w http.ResponseWriter, r *http.Request) {
+func handleGetUsers(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithTimeout(r.Context(), 1*time.Second)
 	defer cancel()
 
-	users, err := s.db.ReadUsers(ctx)
+	users, err := database.ReadUsers(ctx)
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 	}
@@ -36,13 +37,13 @@ func (s *Server) handleGetUsers(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (s *Server) handleCreateUser(w http.ResponseWriter, r *http.Request) {
+func handleCreateUser(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithTimeout(r.Context(), 1*time.Second)
 	defer cancel()
 
 	name := r.FormValue("name")
 
-	_, err := s.db.CreateUser(ctx, name)
+	_, err := database.CreateUser(ctx, name)
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 	}
@@ -55,11 +56,11 @@ type FeedsPage struct {
 	Feeds []typings.Feed
 }
 
-func (s *Server) handleGetFeeds(w http.ResponseWriter, r *http.Request) {
+func handleGetFeeds(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithTimeout(r.Context(), 1*time.Second)
 	defer cancel()
 
-	feeds, err := s.db.ReadFeeds(ctx)
+	feeds, err := database.ReadFeeds(ctx)
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 	}
@@ -80,7 +81,7 @@ func (s *Server) handleGetFeeds(w http.ResponseWriter, r *http.Request) {
 // TODO(Kevin): Get from authentication somehow
 var userId = 1
 
-func (s *Server) handleCreateFeed(w http.ResponseWriter, r *http.Request) {
+func handleCreateFeed(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithTimeout(r.Context(), 1*time.Second)
 	defer cancel()
 
@@ -88,13 +89,13 @@ func (s *Server) handleCreateFeed(w http.ResponseWriter, r *http.Request) {
 	url := r.FormValue("url")
 	hasFollow := r.FormValue("follow")
 
-	feed, err := s.db.CreateFeed(ctx, name, url, userId)
+	feed, err := database.CreateFeed(ctx, name, url, userId)
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 	}
 
 	if hasFollow != "" {
-		_, err = s.db.FollowFeed(ctx, feed.Id, userId)
+		_, err = database.FollowFeed(ctx, feed.Id, userId)
 		if err != nil {
 			http.Error(w, err.Error(), 500)
 		}

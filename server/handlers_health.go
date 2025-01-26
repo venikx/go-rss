@@ -7,6 +7,8 @@ import (
 	"log"
 	"net/http"
 	"time"
+
+	"github.com/venikx/go-rss/database"
 )
 
 type Helmet struct {
@@ -14,7 +16,7 @@ type Helmet struct {
 	Author string
 }
 
-func (s *Server) helloWorldHandler(w http.ResponseWriter, r *http.Request) {
+func helloWorldHandler(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithTimeout(r.Context(), 1*time.Second)
 	defer cancel()
 
@@ -24,7 +26,7 @@ func (s *Server) helloWorldHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	hello, err := s.db.HelloWorld(ctx)
+	hello, err := database.HelloWorld(ctx)
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 		return
@@ -37,11 +39,11 @@ func (s *Server) helloWorldHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (s *Server) healthHandler(w http.ResponseWriter, r *http.Request) {
+func healthHandler(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithTimeout(r.Context(), 1*time.Second)
 	defer cancel()
 
-	jsonResp, err := json.Marshal(s.db.Health(ctx))
+	jsonResp, err := json.Marshal(database.Health(ctx))
 
 	if err != nil {
 		log.Fatalf("error handling JSON marshal. Err: %v", err)

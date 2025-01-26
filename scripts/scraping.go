@@ -1,10 +1,8 @@
-package server
+package scripts
 
 import (
 	"fmt"
 	"net/http"
-	"os"
-	"strconv"
 	"time"
 
 	"github.com/venikx/go-rss/database"
@@ -60,7 +58,7 @@ func urlToFeed(url string) (RSSFeed, error) {
 
 }
 
-func startScraping(
+func StartScraping(
 	concurrency int,
 	timeBetweenRequest time.Duration) {
 	log.Printf("scraping on %v goroutines every %s duration", concurrency, timeBetweenRequest)
@@ -104,18 +102,4 @@ func startScraping(
 		}
 		wg.Wait()
 	}
-}
-
-func NewServer() *http.Server {
-	port, _ := strconv.Atoi(os.Getenv("PORT"))
-
-	server := &http.Server{
-		Addr:         fmt.Sprintf(":%d", port),
-		Handler:      registerRoutes(),
-		IdleTimeout:  time.Minute,
-		ReadTimeout:  10 * time.Second,
-		WriteTimeout: 30 * time.Second,
-	}
-
-	return server
 }

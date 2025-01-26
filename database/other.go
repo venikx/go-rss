@@ -6,10 +6,10 @@ import (
 	"log"
 )
 
-func (s *service) Health(ctx context.Context) map[string]string {
+func Health(ctx context.Context) map[string]string {
 	stats := make(map[string]string)
 
-	err := s.db.Ping(ctx)
+	err := db.Ping(ctx)
 	if err != nil {
 		stats["status"] = "down"
 		stats["error"] = fmt.Sprintf("db down: %v", err)
@@ -49,10 +49,10 @@ func (s *service) Health(ctx context.Context) map[string]string {
 	return stats
 }
 
-func (s *service) HelloWorld(ctx context.Context) (string, error) {
+func HelloWorld(ctx context.Context) (string, error) {
 	var greeting string
 
-	err := s.db.QueryRow(ctx, "SELECT 'Hello, world!'").Scan(&greeting)
+	err := db.QueryRow(ctx, "SELECT 'Hello, world!'").Scan(&greeting)
 	if err != nil {
 		return "", err
 	}
