@@ -1,0 +1,19 @@
+{{ define "create-user-form" }}
+<form method="post">
+  <input id="name" name="name" type="text"/>
+  <button type="submit">Submit</button>
+</form>
+{{ end}}
+
+{{ define "users-list" }}
+<ul id="users-list">
+  {{ range . }}
+  <li>{{ .Id }} - {{ .Name }} - {{ .ApiKey }}</li>
+  {{ end }}
+</ul>
+{{ end }}
+
+{{ define "content" }}
+  {{ template "create-user-form" }}
+  {{ template "users-list" .Users }}
+{{ end }}

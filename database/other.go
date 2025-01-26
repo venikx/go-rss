@@ -4,13 +4,9 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"time"
 )
 
-func (s *service) Health() map[string]string {
-	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
-	defer cancel()
-
+func (s *service) Health(ctx context.Context) map[string]string {
 	stats := make(map[string]string)
 
 	err := s.db.Ping(ctx)
@@ -53,10 +49,10 @@ func (s *service) Health() map[string]string {
 	return stats
 }
 
-func (s *service) HelloWorld() (string, error) {
+func (s *service) HelloWorld(ctx context.Context) (string, error) {
 	var greeting string
 
-	err := s.db.QueryRow(context.Background(), "SELECT 'Hello, world!'").Scan(&greeting)
+	err := s.db.QueryRow(ctx, "SELECT 'Hello, world!'").Scan(&greeting)
 	if err != nil {
 		return "", err
 	}

@@ -1,10 +1,12 @@
 package server
 
 import (
+	"context"
 	"encoding/json"
 	"html/template"
 	"log"
 	"net/http"
+	"time"
 )
 
 type Helmet struct {
@@ -12,14 +14,17 @@ type Helmet struct {
 	Author string
 }
 
-func (s *Server) HelloWorldHandler(w http.ResponseWriter, r *http.Request) {
+func (s *Server) helloWorldHandler(w http.ResponseWriter, r *http.Request) {
+	ctx, cancel := context.WithTimeout(r.Context(), 1*time.Second)
+	defer cancel()
+
 	t, err := template.ParseFiles("views/base.html", "views/hello.html")
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 		return
 	}
 
-	hello, err := s.db.HelloWorld()
+	hello, err := s.db.HelloWorld(ctx)
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 		return
@@ -33,7 +38,10 @@ func (s *Server) HelloWorldHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) healthHandler(w http.ResponseWriter, r *http.Request) {
-	jsonResp, err := json.Marshal(s.db.Health())
+	ctx, cancel := context.WithTimeout(r.Context(), 1*time.Second)
+	defer cancel()
+
+	jsonResp, err := json.Marshal(s.db.Health(ctx))
 
 	if err != nil {
 		log.Fatalf("error handling JSON marshal. Err: %v", err)

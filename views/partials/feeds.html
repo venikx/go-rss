@@ -1,0 +1,21 @@
+{{ define "create-feed-form" }}
+<form method="post">
+  <input id="name" name="name" type="text"/>
+  <input id="url" name="url" type="text"/>
+  <input id="follow" name="follow" type="checkbox"/>
+  <button type="submit">Submit</button>
+</form>
+{{ end}}
+
+{{ define "feeds-list" }}
+<ul id="feeds-list">
+  {{ range . }}
+  <li>{{ .Name }} - {{ .Url }} - {{ .UserId }}</li>
+  {{ end }}
+</ul>
+{{ end }}
+
+{{ define "content" }}
+  {{ template "create-feed-form" }}
+  {{ template "feeds-list" .Feeds }}
+{{ end }}
